@@ -14,8 +14,8 @@
 {% endfor %}
 {% endif %}
 /// # Documentation
-/// view the docs for [{{ fullname }}](https://redis.io/commands/{{ docs_name }})
-func {{ func_name }}<T: FromRedisValue>({% for arg in args %}{{ arg.parameter() }}{{ ", " if not loop.last or has_options }}{% endfor %}{{ "options: {}".format(options_name) if has_options }}) async throws -> T {
+/// view the docs for [{{ docs_name }}](https://redis.io/commands/{{ docs_link_name }})
+func {{ func_name }}<T: FromRedisValue>({% for arg in args %}{{ "_ " if loop.previtem is defined and not loop.previtem.multiple and not loop.previtem.optional  }}{{ "_ " if loop.previtem is not defined }}{{ arg.parameter() }}{{ ", " if not loop.last }}{% endfor %}) async throws -> T {
     {% if is_subcommand %}
     try await Cmd("{{ container_name }}")
         .arg("{{ name }}")
@@ -23,11 +23,12 @@ func {{ func_name }}<T: FromRedisValue>({% for arg in args %}{{ arg.parameter() 
     try await Cmd("{{ name }}")
     {% endif %}
     {% for arg in args %}
-        .arg({{ arg.argument_name() }}.to_redis_args())
+        .arg({{ arg.name }}.to_redis_args())
     {% endfor %}
         .query(self)   
 }
 {% for arg in args %}
-{{ arg.custom_types() }}
+{% if arg.custom_type is defined %}
+{{ arg.custom_type() }}
+{% endif %}
 {% endfor %}
-{{ options_type if has_options }}

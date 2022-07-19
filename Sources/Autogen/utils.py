@@ -17,7 +17,6 @@ def camel_case(s):
 def pascal_case(s):
     return sub("[\_\-\/\.\:]", " ", s).title().replace(" ", "")
 
-
 #https://www.w3resource.com/python-exercises/string/python-data-type-string-exercise-97.php
 def snake_case(s):
   return '_'.join(
@@ -30,3 +29,6 @@ def kebab_case(s):
     sub('([A-Z][a-z]+)', r' \1',
     sub('([A-Z]+)', r' \1',
     s.replace('-', ' ').replace('_', ' '))).split()).lower()
+
+def sanitize(s):
+    return s.replace("-", "_").replace(":", "")

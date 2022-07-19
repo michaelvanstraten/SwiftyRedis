@@ -1,0 +1,7 @@
+{
+    "*": "auto_id",
+    "=": "equal",
+    "~": "approximately",
+    "$": "new_id",
+    "\"\"": "empty_string"
+}

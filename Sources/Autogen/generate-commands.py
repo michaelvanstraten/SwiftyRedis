@@ -8,19 +8,18 @@ from typing import Dict, List
 from datetime import date
 
 from jinja2 import Template
-from panel import extension
 
 from command import Command
 from git_utils import make_sure_remote_repo_is_downloaded
-from subcommand import Subcommand
 from utils import this_dir
 from swift_format import format_files
 
 try:
-    with open(abspath(this_dir + "/commands_to_ignore.json")) as f:
+    with open(abspath(this_dir + "/config/commands_to_ignore.json")) as f:
         commands_to_ignore: List[str] = json.load(f)
 except:
     commands_to_ignore: List[str] = []
+
 
 def create_command(name, desc):
     if desc.get("container"):
@@ -45,20 +44,14 @@ def write_extensions_file(commands: List[Command], file_name: str):
             creation_date=todays_date,
             commands=commands
         ))
-
-# Globals
-
 with open(this_dir + "/templates/extension.swift", 'r') as file:
     extension = Template(file.read())
 
 todays_date = date.today().strftime("%d.%m.%y")
 
-# container_name -> dict(subcommand_name -> Subcommand) - Only subcommands
 subcommands: Dict[str, List[Command]] = {}
-commands: List[Command] = []  # command_name -> Command - Only commands
+commands: List[Command] = []
 
-# MAIN
-# Downloading redis repo
 
 make_sure_remote_repo_is_downloaded(
     "redis", "https://github.com/redis/redis.git", branch="7.0")
@@ -78,7 +71,6 @@ for filename in glob.glob(f"{srcdir}/commands/*.json"):
             print(f"Error processing {filename}: {err}")
             exit(1)
 
-# Creating Swift files
 print("Cleaning out directory...")
 if not exists(outdir):
     os.makedirs(outdir)
@@ -88,12 +80,13 @@ else:
 
 commands.sort(key=lambda command: command.fullname())
 
-
 print("Creating swift files...")
 to_format_files = []
+
 if len(commands) > 0:
     write_extensions_file(commands, "containerless.swift")
-to_format_files.append(f"{outdir}/containerless.swift")
+    to_format_files.append(f"{outdir}/containerless.swift")
+
 for container_name, commands in subcommands.items():
     container_name = container_name.lower()
     write_extensions_file(
@@ -101,6 +94,8 @@ for container_name, commands in subcommands.items():
         f"{container_name}.swift"
     )
     to_format_files.append(
-        f"{outdir}/{container_name}.swift")
+        f"{outdir}/{container_name}.swift"
+    )
+
 if len(to_format_files) > 0:
     format_files(*to_format_files)

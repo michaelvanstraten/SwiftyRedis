@@ -9,6 +9,6 @@ import Foundation
 
 public extension RedisConnection {
 {% for command in commands %}
-    {{ command.code() }}
+    {{ command.func() }}
 {% endfor %}
 }

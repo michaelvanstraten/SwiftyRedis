@@ -8,6 +8,7 @@
 import Foundation
 
 /// Swift representation of [RESP protocol description](https://redis.io/docs/reference/protocol-spec/#resp-protocol-description) constants.
+/// 
 public struct RedisRESP {
     /// Different parts of the protocol are always terminated with "\r\n" (CRLF).
     public static let CRLF = [UInt8(13), UInt8(10)]
