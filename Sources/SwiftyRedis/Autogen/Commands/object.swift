@@ -2,7 +2,7 @@
 //  object.swift
 //
 //
-//  Created by Autogen on 16.07.22.
+//  Created by Autogen on 20.07.22.
 //
 import Foundation
 extension RedisConnection {
@@ -13,7 +13,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [OBJECT FREQ](https://redis.io/commands/object-freq)
-    public func object_freq<T: FromRedisValue>(key: String) async throws -> T {
+    public func object_freq<T: FromRedisValue>(_ key: String) async throws -> T {
         try await Cmd("OBJECT").arg("FREQ").arg(key.to_redis_args()).query(self)
     }
     /// Get the number of references to the value of the key
@@ -23,7 +23,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [OBJECT REFCOUNT](https://redis.io/commands/object-refcount)
-    public func object_refcount<T: FromRedisValue>(key: String) async throws -> T {
+    public func object_refcount<T: FromRedisValue>(_ key: String) async throws -> T {
         try await Cmd("OBJECT").arg("REFCOUNT").arg(key.to_redis_args()).query(self)
     }
     /// Get the time since a Redis object was last accessed
@@ -33,7 +33,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [OBJECT IDLETIME](https://redis.io/commands/object-idletime)
-    public func object_idletime<T: FromRedisValue>(key: String) async throws -> T {
+    public func object_idletime<T: FromRedisValue>(_ key: String) async throws -> T {
         try await Cmd("OBJECT").arg("IDLETIME").arg(key.to_redis_args()).query(self)
     }
     /// Show helpful text about the different subcommands
@@ -51,7 +51,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [OBJECT ENCODING](https://redis.io/commands/object-encoding)
-    public func object_encoding<T: FromRedisValue>(key: String) async throws -> T {
+    public func object_encoding<T: FromRedisValue>(_ key: String) async throws -> T {
         try await Cmd("OBJECT").arg("ENCODING").arg(key.to_redis_args()).query(self)
     }
 }

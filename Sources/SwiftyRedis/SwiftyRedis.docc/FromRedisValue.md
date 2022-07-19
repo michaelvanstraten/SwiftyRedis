@@ -8,5 +8,5 @@ return value into a `String` or an integer.
 
 ## Overview
 
-This Protocol is well supported throughout the package  and you can
+This Protocol is well supported throughout the package and you can
 implement it for your own types if you want.

@@ -2,7 +2,7 @@
 //  memory.swift
 //
 //
-//  Created by Autogen on 16.07.22.
+//  Created by Autogen on 20.07.22.
 //
 import Foundation
 extension RedisConnection {
@@ -47,7 +47,7 @@ extension RedisConnection {
     /// O(N) where N is the number of samples.
     /// # Documentation
     /// view the docs for [MEMORY USAGE](https://redis.io/commands/memory-usage)
-    public func memory_usage<T: FromRedisValue>(key: String, count: Int? = nil) async throws -> T {
+    public func memory_usage<T: FromRedisValue>(_ key: String, _ count: Int? = nil) async throws -> T {
         try await Cmd("MEMORY").arg("USAGE").arg(key.to_redis_args()).arg(count.to_redis_args()).query(self)
     }
     /// Show allocator internal stats

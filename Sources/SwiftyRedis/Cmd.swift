@@ -64,6 +64,7 @@ public class Cmd {
         packed_cmd.append(contentsOf: RedisRESP.CRLF)
         
         for arg in args {
+            print(String(data: arg, encoding: .utf8)!)
             packed_cmd.append(contentsOf: [RedisRESP.BulkString])
             packed_cmd.append(contentsOf: String(arg.count).data(using: .utf8)!)
             packed_cmd.append(contentsOf: RedisRESP.CRLF)

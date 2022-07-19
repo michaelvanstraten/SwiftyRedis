@@ -2,7 +2,7 @@
 //  config.swift
 //
 //
-//  Created by Autogen on 16.07.22.
+//  Created by Autogen on 20.07.22.
 //
 import Foundation
 extension RedisConnection {
@@ -43,15 +43,12 @@ extension RedisConnection {
     /// - 7.0.0, Added the ability to pass multiple pattern parameters in one call
     /// # Documentation
     /// view the docs for [CONFIG GET](https://redis.io/commands/config-get)
-    public func config_get<T: FromRedisValue>(parameter: ConfigGetParameter...) async throws -> T {
+    public func config_get<T: FromRedisValue>(_ parameter: ConfigGetParameter...) async throws -> T {
         try await Cmd("CONFIG").arg("GET").arg(parameter.to_redis_args()).query(self)
     }
     public struct ConfigGetParameter: ToRedisArgs {
         let parameter: String
-        public func write_redis_args(out: inout [Data]) {
-            out.append("parameter".data(using: .utf8)!)
-            parameter.write_redis_args(out: &out)
-        }
+        public func write_redis_args(out: inout [Data]) { parameter.write_redis_args(out: &out) }
     }
     /// Set configuration parameters to the given values
     /// # Available since
@@ -62,14 +59,13 @@ extension RedisConnection {
     /// - 7.0.0, Added the ability to set multiple parameters in one call.
     /// # Documentation
     /// view the docs for [CONFIG SET](https://redis.io/commands/config-set)
-    public func config_set<T: FromRedisValue>(parameterValue: ConfigSetParameterValue...) async throws -> T {
+    public func config_set<T: FromRedisValue>(_ parameterValue: ConfigSetParametervalue...) async throws -> T {
         try await Cmd("CONFIG").arg("SET").arg(parameterValue.to_redis_args()).query(self)
     }
-    public struct ConfigSetParameterValue: ToRedisArgs {
+    public struct ConfigSetParametervalue: ToRedisArgs {
         let parameter: String
         let value: String
         public func write_redis_args(out: inout [Data]) {
-            out.append("parameter_value".data(using: .utf8)!)
             parameter.write_redis_args(out: &out)
             value.write_redis_args(out: &out)
         }

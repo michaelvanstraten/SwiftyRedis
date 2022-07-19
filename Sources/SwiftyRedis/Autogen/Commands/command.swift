@@ -2,7 +2,7 @@
 //  command.swift
 //
 //
-//  Created by Autogen on 16.07.22.
+//  Created by Autogen on 20.07.22.
 //
 import Foundation
 extension RedisConnection {
@@ -23,7 +23,7 @@ extension RedisConnection {
     /// O(N) where N is the number of commands to look up
     /// # Documentation
     /// view the docs for [COMMAND DOCS](https://redis.io/commands/command-docs)
-    public func command_docs<T: FromRedisValue>(commandName: String?...) async throws -> T {
+    public func command_docs<T: FromRedisValue>(_ commandName: String?...) async throws -> T {
         try await Cmd("COMMAND").arg("DOCS").arg(commandName.to_redis_args()).query(self)
     }
     /// Get total number of Redis commands
@@ -63,7 +63,7 @@ extension RedisConnection {
     /// - 7.0.0, Allowed to be called with no argument to get info on all commands.
     /// # Documentation
     /// view the docs for [COMMAND INFO](https://redis.io/commands/command-info)
-    public func command_info<T: FromRedisValue>(commandName: String?...) async throws -> T {
+    public func command_info<T: FromRedisValue>(_ commandName: String?...) async throws -> T {
         try await Cmd("COMMAND").arg("INFO").arg(commandName.to_redis_args()).query(self)
     }
     /// Get an array of Redis command names
@@ -73,7 +73,7 @@ extension RedisConnection {
     /// O(N) where N is the total number of Redis commands
     /// # Documentation
     /// view the docs for [COMMAND LIST](https://redis.io/commands/command-list)
-    public func command_list<T: FromRedisValue>(filterby: CommandListFilterby? = nil) async throws -> T {
+    public func command_list<T: FromRedisValue>(_ filterby: CommandListFilterby? = nil) async throws -> T {
         try await Cmd("COMMAND").arg("LIST").arg(filterby.to_redis_args()).query(self)
     }
     public enum CommandListFilterby: ToRedisArgs {
@@ -82,9 +82,15 @@ extension RedisConnection {
         case PATTERN(String)
         public func write_redis_args(out: inout [Data]) {
             switch self {
-            case .MODULE(let string): string.write_redis_args(out: &out)
-            case .ACLCAT(let string): string.write_redis_args(out: &out)
-            case .PATTERN(let string): string.write_redis_args(out: &out)
+            case .MODULE(let string):
+                out.append("MODULE".data(using: .utf8)!)
+                string.write_redis_args(out: &out)
+            case .ACLCAT(let string):
+                out.append("ACLCAT".data(using: .utf8)!)
+                string.write_redis_args(out: &out)
+            case .PATTERN(let string):
+                out.append("PATTERN".data(using: .utf8)!)
+                string.write_redis_args(out: &out)
             }
         }
     }

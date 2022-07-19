@@ -2,7 +2,7 @@
 //  slowlog.swift
 //
 //
-//  Created by Autogen on 16.07.22.
+//  Created by Autogen on 20.07.22.
 //
 import Foundation
 extension RedisConnection {
@@ -25,7 +25,7 @@ extension RedisConnection {
     /// - 4.0.0, Added client IP address, port and name to the reply.
     /// # Documentation
     /// view the docs for [SLOWLOG GET](https://redis.io/commands/slowlog-get)
-    public func slowlog_get<T: FromRedisValue>(count: Int? = nil) async throws -> T {
+    public func slowlog_get<T: FromRedisValue>(_ count: Int? = nil) async throws -> T {
         try await Cmd("SLOWLOG").arg("GET").arg(count.to_redis_args()).query(self)
     }
     /// Show helpful text about the different subcommands

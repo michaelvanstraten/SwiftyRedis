@@ -2,7 +2,7 @@
 //  module.swift
 //
 //
-//  Created by Autogen on 16.07.22.
+//  Created by Autogen on 20.07.22.
 //
 import Foundation
 extension RedisConnection {
@@ -13,7 +13,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [MODULE UNLOAD](https://redis.io/commands/module-unload)
-    public func module_unload<T: FromRedisValue>(name: String) async throws -> T {
+    public func module_unload<T: FromRedisValue>(_ name: String) async throws -> T {
         try await Cmd("MODULE").arg("UNLOAD").arg(name.to_redis_args()).query(self)
     }
     /// Show helpful text about the different subcommands
@@ -31,7 +31,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [MODULE LOAD](https://redis.io/commands/module-load)
-    public func module_load<T: FromRedisValue>(path: String, arg: String?...) async throws -> T {
+    public func module_load<T: FromRedisValue>(_ path: String, _ arg: String?...) async throws -> T {
         try await Cmd("MODULE").arg("LOAD").arg(path.to_redis_args()).arg(arg.to_redis_args()).query(self)
     }
     /// Load a module with extended parameters
@@ -42,7 +42,7 @@ extension RedisConnection {
     /// # Documentation
     /// view the docs for [MODULE LOADEX](https://redis.io/commands/module-loadex)
     public func module_loadex<T: FromRedisValue>(
-        path: String, configs: ModuleLoadexConfigs?..., args: ModuleLoadexArgs?...
+        _ path: String, _ configs: ModuleLoadexConfigs?..., args: ModuleLoadexArgs?...
     ) async throws -> T {
         try await Cmd("MODULE").arg("LOADEX").arg(path.to_redis_args()).arg(configs.to_redis_args()).arg(
             args.to_redis_args()
@@ -52,17 +52,13 @@ extension RedisConnection {
         let name: String
         let value: String
         public func write_redis_args(out: inout [Data]) {
-            out.append("CONFIG".data(using: .utf8)!)
             name.write_redis_args(out: &out)
             value.write_redis_args(out: &out)
         }
     }
     public struct ModuleLoadexArgs: ToRedisArgs {
         let arg: String
-        public func write_redis_args(out: inout [Data]) {
-            out.append("ARGS".data(using: .utf8)!)
-            arg.write_redis_args(out: &out)
-        }
+        public func write_redis_args(out: inout [Data]) { arg.write_redis_args(out: &out) }
     }
     /// List all modules loaded by the server
     /// # Available since
