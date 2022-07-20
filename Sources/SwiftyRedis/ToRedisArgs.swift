@@ -9,15 +9,15 @@ import Foundation
 
 
 public protocol ToRedisArgs {
-    /// This writes the value into an Array of bytes.  Each item
-    /// is a single argument.  Most items generate a single item.
+    /// This writes the value into an Array of bytes. Each item
+    /// is a single argument. Most items generate a single item.
     /// The exception to this rule currently are Arrays of items.
     func write_redis_args(out: inout Array<Data>)
 }
 
 extension ToRedisArgs {
-    /// This converts the value into an Array of bytes.  Each item
-    /// is a single argument.  Most items generate a vector of a
+    /// This converts the value into an Array of bytes. Each item
+    /// is a single argument. Most items generate a vector of a
     /// single item. The exception to this rule currently are Arrays of items.
     func to_redis_args() -> Array<Data> {
         var data : Array<Data> = Array()

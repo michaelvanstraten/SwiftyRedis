@@ -1,14 +1,4 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
-from typing import List
-
-if TYPE_CHECKING:
-    from enum_argument import EnumArgument
-    from struct_argument import StructArgument
-
-from utils import camel_case, pascal_case, sanitize, this_dir
+from utils import pascal_case
 from argument import Argument
 
 class ComplexArgument(Argument):

@@ -9,7 +9,7 @@ import Foundation
 
 public protocol FromRedisValue {
     /// Given a ``RedisValue`` this attempts to convert it into the given
-    /// destination type.  If that fails because it's not compatible an
+    /// destination type. If that fails because it's not compatible an
     /// appropriate error is generated.
     init(_ value: RedisValue) throws
 }

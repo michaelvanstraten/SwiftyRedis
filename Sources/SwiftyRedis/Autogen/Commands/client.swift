@@ -13,7 +13,7 @@ extension RedisConnection {
     /// O(log N) where N is the number of client connections
     /// # Documentation
     /// view the docs for [CLIENT UNBLOCK](https://redis.io/commands/client-unblock)
-    public func client_unblock<T: FromRedisValue>(_ clientId: Int, _ timeoutError: ClientUnblockTimeouterror? = nil)
+    public func client_unblock<T: FromRedisValue>(clientId: Int, timeoutError: ClientUnblockTimeouterror? = nil)
         async throws -> T
     {
         try await Cmd("CLIENT").arg("UNBLOCK").arg(clientId.to_redis_args()).arg(timeoutError.to_redis_args()).query(
@@ -44,7 +44,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [CLIENT SETNAME](https://redis.io/commands/client-setname)
-    public func client_setname<T: FromRedisValue>(_ connectionName: String) async throws -> T {
+    public func client_setname<T: FromRedisValue>(connectionName: String) async throws -> T {
         try await Cmd("CLIENT").arg("SETNAME").arg(connectionName.to_redis_args()).query(self)
     }
     /// Get the list of client connections
@@ -59,10 +59,11 @@ extension RedisConnection {
     /// # Documentation
     /// view the docs for [CLIENT LIST](https://redis.io/commands/client-list)
     public func client_list<T: FromRedisValue>(
-        _ normalMasterReplicaPubsub: ClientListNormalmasterreplicapubsub? = nil, id: ClientListId? = nil
+        normalMasterReplicaPubsub: ClientListNormalmasterreplicapubsub? = nil, id: ClientListId? = nil
     ) async throws -> T {
-        try await Cmd("CLIENT").arg("LIST").arg(normalMasterReplicaPubsub.to_redis_args()).arg(id.to_redis_args())
-            .query(self)
+        try await Cmd("CLIENT").arg("LIST").arg((normalMasterReplicaPubsub != nil) ? "TYPE" : nil).arg(
+            normalMasterReplicaPubsub.to_redis_args()
+        ).arg((id != nil) ? "ID" : nil).arg(id.to_redis_args()).query(self)
     }
     public enum ClientListNormalmasterreplicapubsub: ToRedisArgs {
         case normal
@@ -125,7 +126,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [CLIENT NO_EVICT](https://redis.io/commands/client-no-evict)
-    public func client_no_evict<T: FromRedisValue>(_ enabled: ClientNoEvictEnabled) async throws -> T {
+    public func client_no_evict<T: FromRedisValue>(enabled: ClientNoEvictEnabled) async throws -> T {
         try await Cmd("CLIENT").arg("NO_EVICT").arg(enabled.to_redis_args()).query(self)
     }
     public enum ClientNoEvictEnabled: ToRedisArgs {
@@ -147,7 +148,7 @@ extension RedisConnection {
     /// - 6.2.0, `CLIENT PAUSE WRITE` mode added along with the `mode` option.
     /// # Documentation
     /// view the docs for [CLIENT PAUSE](https://redis.io/commands/client-pause)
-    public func client_pause<T: FromRedisValue>(_ timeout: Int, _ mode: ClientPauseMode? = nil) async throws -> T {
+    public func client_pause<T: FromRedisValue>(timeout: Int, mode: ClientPauseMode? = nil) async throws -> T {
         try await Cmd("CLIENT").arg("PAUSE").arg(timeout.to_redis_args()).arg(mode.to_redis_args()).query(self)
     }
     public enum ClientPauseMode: ToRedisArgs {
@@ -167,7 +168,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [CLIENT REPLY](https://redis.io/commands/client-reply)
-    public func client_reply<T: FromRedisValue>(_ onOffSkip: ClientReplyOnoffskip) async throws -> T {
+    public func client_reply<T: FromRedisValue>(onOffSkip: ClientReplyOnoffskip) async throws -> T {
         try await Cmd("CLIENT").arg("REPLY").arg(onOffSkip.to_redis_args()).query(self)
     }
     public enum ClientReplyOnoffskip: ToRedisArgs {
@@ -196,14 +197,16 @@ extension RedisConnection {
     /// # Documentation
     /// view the docs for [CLIENT KILL](https://redis.io/commands/client-kill)
     public func client_kill<T: FromRedisValue>(
-        _ ipPort: String? = nil, clientId: Int? = nil,
-        normalMasterSlavePubsub: ClientKillNormalmasterslavepubsub? = nil, username: String? = nil, ADDR: String? = nil,
-        LADDR: String? = nil, yesNo: String? = nil
+        ipPort: String? = nil, clientId: Int? = nil, normalMasterSlavePubsub: ClientKillNormalmasterslavepubsub? = nil,
+        username: String? = nil, ADDR: String? = nil, LADDR: String? = nil, yesNo: String? = nil
     ) async throws -> T {
-        try await Cmd("CLIENT").arg("KILL").arg(ipPort.to_redis_args()).arg(clientId.to_redis_args()).arg(
-            normalMasterSlavePubsub.to_redis_args()
-        ).arg(username.to_redis_args()).arg(ADDR.to_redis_args()).arg(LADDR.to_redis_args()).arg(yesNo.to_redis_args())
-            .query(self)
+        try await Cmd("CLIENT").arg("KILL").arg(ipPort.to_redis_args()).arg((clientId != nil) ? "ID" : nil).arg(
+            clientId.to_redis_args()
+        ).arg((normalMasterSlavePubsub != nil) ? "TYPE" : nil).arg(normalMasterSlavePubsub.to_redis_args()).arg(
+            (username != nil) ? "USER" : nil
+        ).arg(username.to_redis_args()).arg((ADDR != nil) ? "ADDR" : nil).arg(ADDR.to_redis_args()).arg(
+            (LADDR != nil) ? "LADDR" : nil
+        ).arg(LADDR.to_redis_args()).arg((yesNo != nil) ? "SKIPME" : nil).arg(yesNo.to_redis_args()).query(self)
     }
     public enum ClientKillNormalmasterslavepubsub: ToRedisArgs {
         case normal
@@ -228,7 +231,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [CLIENT CACHING](https://redis.io/commands/client-caching)
-    public func client_caching<T: FromRedisValue>(_ mode: ClientCachingMode) async throws -> T {
+    public func client_caching<T: FromRedisValue>(mode: ClientCachingMode) async throws -> T {
         try await Cmd("CLIENT").arg("CACHING").arg(mode.to_redis_args()).query(self)
     }
     public enum ClientCachingMode: ToRedisArgs {
@@ -269,12 +272,12 @@ extension RedisConnection {
     /// # Documentation
     /// view the docs for [CLIENT TRACKING](https://redis.io/commands/client-tracking)
     public func client_tracking<T: FromRedisValue>(
-        _ status: ClientTrackingStatus, _ clientId: Int? = nil, options: ClientTrackingOptions? = nil,
-        prefix: String?...
+        status: ClientTrackingStatus, clientId: Int? = nil, prefix: String..., options: ClientTrackingOptions? = nil
     ) async throws -> T {
-        try await Cmd("CLIENT").arg("TRACKING").arg(status.to_redis_args()).arg(clientId.to_redis_args()).arg(
-            options.to_redis_args()
-        ).arg(prefix.to_redis_args()).query(self)
+        try await Cmd("CLIENT").arg("TRACKING").arg(status.to_redis_args()).arg((clientId != nil) ? "REDIRECT" : nil)
+            .arg(clientId.to_redis_args()).arg((!prefix.isEmpty) ? "PREFIX" : nil).arg(prefix.to_redis_args()).arg(
+                options.to_redis_args()
+            ).query(self)
     }
     public enum ClientTrackingStatus: ToRedisArgs {
         case ON

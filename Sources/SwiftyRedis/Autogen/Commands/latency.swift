@@ -21,7 +21,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [LATENCY GRAPH](https://redis.io/commands/latency-graph)
-    public func latency_graph<T: FromRedisValue>(_ event: String) async throws -> T {
+    public func latency_graph<T: FromRedisValue>(event: String) async throws -> T {
         try await Cmd("LATENCY").arg("GRAPH").arg(event.to_redis_args()).query(self)
     }
     /// Return timestamp-latency samples for the event.
@@ -31,7 +31,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [LATENCY HISTORY](https://redis.io/commands/latency-history)
-    public func latency_history<T: FromRedisValue>(_ event: String) async throws -> T {
+    public func latency_history<T: FromRedisValue>(event: String) async throws -> T {
         try await Cmd("LATENCY").arg("HISTORY").arg(event.to_redis_args()).query(self)
     }
     /// Return the latest latency samples for all events.
@@ -51,7 +51,7 @@ extension RedisConnection {
     /// O(N) where N is the number of commands with latency information being retrieved.
     /// # Documentation
     /// view the docs for [LATENCY HISTOGRAM](https://redis.io/commands/latency-histogram)
-    public func latency_histogram<T: FromRedisValue>(_ command: String?...) async throws -> T {
+    public func latency_histogram<T: FromRedisValue>(command: String...) async throws -> T {
         try await Cmd("LATENCY").arg("HISTOGRAM").arg(command.to_redis_args()).query(self)
     }
     /// Reset latency data for one or more events.
@@ -61,7 +61,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [LATENCY RESET](https://redis.io/commands/latency-reset)
-    public func latency_reset<T: FromRedisValue>(_ event: String?...) async throws -> T {
+    public func latency_reset<T: FromRedisValue>(event: String...) async throws -> T {
         try await Cmd("LATENCY").arg("RESET").arg(event.to_redis_args()).query(self)
     }
     /// Return a human readable latency analysis report.

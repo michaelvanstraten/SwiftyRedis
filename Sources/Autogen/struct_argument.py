@@ -22,5 +22,5 @@ class StructArgument(ComplexArgument):
         return struct_template.render(
             struct_name=self.type,
             args=self.args,
-            camel_case=camel_case,
+            camel_case=camel_case
         )

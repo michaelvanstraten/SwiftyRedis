@@ -40,18 +40,15 @@ public class Cmd {
         return self
     }
     
-    /// Sends the command as query to the connection and converts the
-    /// result to the target redis value. This is the general way how
-    /// you can retrieve data.
+    /// Sends the command as query to the connection and converts the result to the target redis value.
+    /// This is the general way how you can retrieve data.
     public func query<T: FromRedisValue>(_ con: RedisConnection) async throws -> T {
         let value = try await con.request_packed_cmd(pack_command())
         return try T.init(value)
     }
     
-    /// This is a shortcut to ``Cmd/query(_:)`` that does not return a ``RedisValue`` and
-    /// will throw if the query fails because of an error. This is
-    /// mainly useful in examples and for simple commands like setting
-    /// keys.
+    /// This is a shortcut to ``Cmd/query(_:)`` that does not return a ``RedisValue`` and will throw if the query fails because of an error.
+    /// This is mainly useful in examples and for simple commands like setting keys.
     public func execute(_ con: RedisConnection) async throws {
         let _: String = try await query(con)
     }
@@ -64,7 +61,6 @@ public class Cmd {
         packed_cmd.append(contentsOf: RedisRESP.CRLF)
         
         for arg in args {
-            print(String(data: arg, encoding: .utf8)!)
             packed_cmd.append(contentsOf: [RedisRESP.BulkString])
             packed_cmd.append(contentsOf: String(arg.count).data(using: .utf8)!)
             packed_cmd.append(contentsOf: RedisRESP.CRLF)

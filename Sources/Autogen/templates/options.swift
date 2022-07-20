@@ -1,4 +1,4 @@
-struct {{ options_name }}: OptionSet, ToRedisArgs {
+public struct {{ options_name }}: OptionSet, ToRedisArgs {
     public let rawValue: Int
 
     public init(rawValue: Int) {

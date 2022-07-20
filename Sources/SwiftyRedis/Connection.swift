@@ -63,16 +63,3 @@ public class RedisConnection {
         return try await receive_response()
     }
 }
-
-struct ConnectionInfo {
-    let host: NWEndpoint.Host
-    let port: NWEndpoint.Port
-    let params: NWParameters
-    let databaseInfo: DatabaseInfo
-}
-
-struct DatabaseInfo {
-    let db: UInt
-    let username: String?
-    let password: String?
-}

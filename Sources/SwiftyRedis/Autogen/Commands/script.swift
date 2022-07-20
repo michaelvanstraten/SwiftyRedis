@@ -23,7 +23,7 @@ extension RedisConnection {
     /// - 6.2.0, Added the `ASYNC` and `SYNC` flushing mode modifiers.
     /// # Documentation
     /// view the docs for [SCRIPT FLUSH](https://redis.io/commands/script-flush)
-    public func script_flush<T: FromRedisValue>(_ async: ScriptFlushAsync? = nil) async throws -> T {
+    public func script_flush<T: FromRedisValue>(async: ScriptFlushAsync? = nil) async throws -> T {
         try await Cmd("SCRIPT").arg("FLUSH").arg(async.to_redis_args()).query(self)
     }
     public enum ScriptFlushAsync: ToRedisArgs {
@@ -43,7 +43,7 @@ extension RedisConnection {
     /// O(N) with N being the length in bytes of the script body.
     /// # Documentation
     /// view the docs for [SCRIPT LOAD](https://redis.io/commands/script-load)
-    public func script_load<T: FromRedisValue>(_ script: String) async throws -> T {
+    public func script_load<T: FromRedisValue>(script: String) async throws -> T {
         try await Cmd("SCRIPT").arg("LOAD").arg(script.to_redis_args()).query(self)
     }
     /// Show helpful text about the different subcommands
@@ -61,7 +61,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [SCRIPT DEBUG](https://redis.io/commands/script-debug)
-    public func script_debug<T: FromRedisValue>(_ mode: ScriptDebugMode) async throws -> T {
+    public func script_debug<T: FromRedisValue>(mode: ScriptDebugMode) async throws -> T {
         try await Cmd("SCRIPT").arg("DEBUG").arg(mode.to_redis_args()).query(self)
     }
     public enum ScriptDebugMode: ToRedisArgs {
@@ -83,7 +83,7 @@ extension RedisConnection {
     /// O(N) with N being the number of scripts to check (so checking a single script is an O(1) operation).
     /// # Documentation
     /// view the docs for [SCRIPT EXISTS](https://redis.io/commands/script-exists)
-    public func script_exists<T: FromRedisValue>(_ sha1: String...) async throws -> T {
+    public func script_exists<T: FromRedisValue>(sha1: String...) async throws -> T {
         try await Cmd("SCRIPT").arg("EXISTS").arg(sha1.to_redis_args()).query(self)
     }
 }

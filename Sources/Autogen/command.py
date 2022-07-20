@@ -20,7 +20,7 @@ class Command(object):
         self.desc = desc
         self.is_subcommand = is_subcommand
         self.name: str = sanitize(name.upper())
-        self.container_name = sanitize(desc.get("container", "").upper())
+        self.container_name = desc.get("container")
         self.args: List[Argument] = parse_args(self.desc.get(
             "arguments", []), self.fullname())
 
@@ -28,7 +28,6 @@ class Command(object):
         return command_template.render(
             func_name=self.func_name(),
             name=self.name,
-            is_subcommand=self.is_subcommand,
             container_name=self.container_name,
             args=self.args,
             summary=self.desc.get("summary"),

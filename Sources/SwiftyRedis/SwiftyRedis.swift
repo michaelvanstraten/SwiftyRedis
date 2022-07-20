@@ -42,18 +42,17 @@ public class RedisClient {
         self.password = password
     }
     
-    /// Instructs the client to actually connect to redis and returns a
-    /// connection object. The connection object can be used to send
-    /// commands to the server.
+    /// Instructs the client to actually connect to redis and returns a connection object.
+    /// The connection object can be used to send commands to the server.
     public func get_connection() async throws -> RedisConnection {
         let actual_connection = create_redis_connection()
         try await connect_to_redis(con: actual_connection)
         let redis_connection = RedisConnection(actual_connection)
         if self.database != 0 {
-            let _: String = try await redis_connection.select(Int(self.database))
+            let _: String = try await redis_connection.select(index: Int(self.database))
         }
         if let username = self.username, let password = self.password {
-            let _: String = try await redis_connection.auth(username, password: password)
+            let _: String = try await redis_connection.auth(username: username, password: password)
         }
         return redis_connection
     }

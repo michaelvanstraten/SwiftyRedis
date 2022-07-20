@@ -13,7 +13,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [MODULE UNLOAD](https://redis.io/commands/module-unload)
-    public func module_unload<T: FromRedisValue>(_ name: String) async throws -> T {
+    public func module_unload<T: FromRedisValue>(name: String) async throws -> T {
         try await Cmd("MODULE").arg("UNLOAD").arg(name.to_redis_args()).query(self)
     }
     /// Show helpful text about the different subcommands
@@ -31,7 +31,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [MODULE LOAD](https://redis.io/commands/module-load)
-    public func module_load<T: FromRedisValue>(_ path: String, _ arg: String?...) async throws -> T {
+    public func module_load<T: FromRedisValue>(path: String, arg: String...) async throws -> T {
         try await Cmd("MODULE").arg("LOAD").arg(path.to_redis_args()).arg(arg.to_redis_args()).query(self)
     }
     /// Load a module with extended parameters
@@ -42,11 +42,11 @@ extension RedisConnection {
     /// # Documentation
     /// view the docs for [MODULE LOADEX](https://redis.io/commands/module-loadex)
     public func module_loadex<T: FromRedisValue>(
-        _ path: String, _ configs: ModuleLoadexConfigs?..., args: ModuleLoadexArgs?...
+        path: String, configs: ModuleLoadexConfigs..., args: ModuleLoadexArgs...
     ) async throws -> T {
-        try await Cmd("MODULE").arg("LOADEX").arg(path.to_redis_args()).arg(configs.to_redis_args()).arg(
-            args.to_redis_args()
-        ).query(self)
+        try await Cmd("MODULE").arg("LOADEX").arg(path.to_redis_args()).arg((!configs.isEmpty) ? "CONFIG" : nil).arg(
+            configs.to_redis_args()
+        ).arg((!args.isEmpty) ? "ARGS" : nil).arg(args.to_redis_args()).query(self)
     }
     public struct ModuleLoadexConfigs: ToRedisArgs {
         let name: String

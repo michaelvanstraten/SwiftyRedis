@@ -13,7 +13,7 @@ extension RedisConnection {
     /// O(N) where N is the number of functions deleted
     /// # Documentation
     /// view the docs for [FUNCTION FLUSH](https://redis.io/commands/function-flush)
-    public func function_flush<T: FromRedisValue>(_ async: FunctionFlushAsync? = nil) async throws -> T {
+    public func function_flush<T: FromRedisValue>(async: FunctionFlushAsync? = nil) async throws -> T {
         try await Cmd("FUNCTION").arg("FLUSH").arg(async.to_redis_args()).query(self)
     }
     public enum FunctionFlushAsync: ToRedisArgs {
@@ -33,11 +33,12 @@ extension RedisConnection {
     /// O(N) where N is the number of functions
     /// # Documentation
     /// view the docs for [FUNCTION LIST](https://redis.io/commands/function-list)
-    public func function_list<T: FromRedisValue>(
-        _ libraryNamePattern: String? = nil, options: FunctionListOptions? = nil
-    ) async throws -> T {
-        try await Cmd("FUNCTION").arg("LIST").arg(libraryNamePattern.to_redis_args()).arg(options.to_redis_args())
-            .query(self)
+    public func function_list<T: FromRedisValue>(libraryNamePattern: String? = nil, options: FunctionListOptions? = nil)
+        async throws -> T
+    {
+        try await Cmd("FUNCTION").arg("LIST").arg((libraryNamePattern != nil) ? "LIBRARYNAME" : nil).arg(
+            libraryNamePattern.to_redis_args()
+        ).arg(options.to_redis_args()).query(self)
     }
     public struct FunctionListOptions: OptionSet, ToRedisArgs {
         public let rawValue: Int
@@ -54,7 +55,7 @@ extension RedisConnection {
     /// O(1)
     /// # Documentation
     /// view the docs for [FUNCTION DELETE](https://redis.io/commands/function-delete)
-    public func function_delete<T: FromRedisValue>(_ libraryName: String) async throws -> T {
+    public func function_delete<T: FromRedisValue>(libraryName: String) async throws -> T {
         try await Cmd("FUNCTION").arg("DELETE").arg(libraryName.to_redis_args()).query(self)
     }
     /// Return information about the function currently running (name, description, duration)
@@ -74,7 +75,7 @@ extension RedisConnection {
     /// O(N) where N is the number of functions on the payload
     /// # Documentation
     /// view the docs for [FUNCTION RESTORE](https://redis.io/commands/function-restore)
-    public func function_restore<T: FromRedisValue>(_ serializedValue: String, _ policy: FunctionRestorePolicy? = nil)
+    public func function_restore<T: FromRedisValue>(serializedValue: String, policy: FunctionRestorePolicy? = nil)
         async throws -> T
     {
         try await Cmd("FUNCTION").arg("RESTORE").arg(serializedValue.to_redis_args()).arg(policy.to_redis_args()).query(
@@ -99,8 +100,8 @@ extension RedisConnection {
     /// O(1) (considering compilation time is redundant)
     /// # Documentation
     /// view the docs for [FUNCTION LOAD](https://redis.io/commands/function-load)
-    public func function_load<T: FromRedisValue>(_ functionCode: String, _ options: FunctionLoadOptions? = nil)
-        async throws -> T
+    public func function_load<T: FromRedisValue>(functionCode: String, options: FunctionLoadOptions? = nil) async throws
+        -> T
     { try await Cmd("FUNCTION").arg("LOAD").arg(functionCode.to_redis_args()).arg(options.to_redis_args()).query(self) }
     public struct FunctionLoadOptions: OptionSet, ToRedisArgs {
         public let rawValue: Int
