@@ -2,7 +2,7 @@ from os.path import abspath
 from jinja2 import Template
 from argument import parse_args
 
-from utils import camel_case, pascal_case, sanitize, this_dir
+from utils import camel_case, this_dir
 from complex_argument import ComplexArgument
 
 with open(abspath(this_dir + "/templates/enum.swift")) as file:
